@@ -1,0 +1,13 @@
+[Unit]
+Description=Mesos Master service
+After=docker.service
+After=zookeeper.1.service
+Requires=docker.service
+Requires=zookeeper.1.service
+
+[Service]
+ExecStart=/usr/bin/docker run --rm --name mesos-master -p 5050:5050 jveverka/mesos-master
+ExecStop=/usr/bin/docker rm -f mesos-master
+
+[X-Fleet]
+X-Conflicts=mesos-master.*.service

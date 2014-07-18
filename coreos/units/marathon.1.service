@@ -1,0 +1,13 @@
+[Unit]
+Description=Marathon service
+After=docker.service
+After=zookeeper.1.service
+Requires=docker.service
+Requires=zookeeper.1.service
+
+[Service]
+ExecStart=/usr/bin/docker run --rm --name marathon -p 8080:8080 jveverka/marathon
+ExecStop=/usr/bin/docker rm -f marathon
+
+[X-Fleet]
+X-Conflicts=marathon.*.service

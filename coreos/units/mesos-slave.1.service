@@ -1,0 +1,15 @@
+[Unit]
+Description=Mesos Slave service
+After=docker.service
+After=zookeeper.1.service
+After=mesos-master.1.service
+Requires=docker.service
+Requires=zookeeper.1.service
+Requires=mesos-master.1.service
+
+[Service]
+ExecStart=/usr/bin/docker run --rm -v /var/run/docker.sock:/var/run/docker.sock --name mesos-slave jveverka/mesos-slave
+ExecStop=/usr/bin/docker rm -f mesos-slave
+
+[X-Fleet]
+X-Conflicts=mesos-slave.*.service
