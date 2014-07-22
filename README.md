@@ -19,7 +19,7 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
  - Test marathon API
   - curl -v -X POST -H "Content-Type: application/json" <marathon-IP>:8080/v2/apps -d@test.json
   - test.json:
-	{
+``	{
 	"id": "test",
 	"container": {"image": "docker:///debian:jessie", "options" : []},
 	"cmd": "while sleep 10; do date -u +%T; done",
@@ -27,7 +27,7 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
 	"mem": "268.0",
 		"uris": [ ],
 		"instances": "1"
-	}
+	}``
 
 # TODO
 
