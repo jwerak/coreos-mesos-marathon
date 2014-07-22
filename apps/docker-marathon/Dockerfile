@@ -12,4 +12,4 @@ RUN ln -s /usr/local/marathon-0.6.0 /usr/local/marathon
 
 EXPOSE 8080
 
-CMD /usr/local/marathon/bin/start --master zk://172.17.8.103:2181/mesos --zk zk://172.17.8.103:2181/marathon
+CMD /usr/local/marathon/bin/start --master zk://172.17.8.102:2181/mesos --zk zk://172.17.8.102:2181/marathon
