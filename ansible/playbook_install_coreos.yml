@@ -1,0 +1,6 @@
+- hosts: coreos
+  gather_facts: no
+  sudo: True
+  roles:
+    - { role: ansible-coreos }
+

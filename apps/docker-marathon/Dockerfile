@@ -1,6 +1,6 @@
 # DOCKER-VERSION 1.0.1
 # VERSION        0.5
-# mesos
+# marathon
 FROM jveverka/mesos
 MAINTAINER Jakub Veverka <jveverkal@vendavo.com>
 
@@ -12,4 +12,4 @@ RUN ln -s /usr/local/marathon-0.6.0 /usr/local/marathon
 
 EXPOSE 8080
 
-CMD /usr/local/marathon/bin/start --master zk://172.17.8.102:2181/mesos --zk zk://172.17.8.102:2181/marathon
+CMD /usr/local/marathon/bin/start --master "zk://${ZOOKEEPER_ENDPOINTS}/mesos" --zk "zk://${ZOOKEEPER_ENDPOINTS}/marathon"

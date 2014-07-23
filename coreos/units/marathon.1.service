@@ -6,7 +6,7 @@ Requires=docker.service
 Requires=zookeeper.1.service
 
 [Service]
-ExecStart=/usr/bin/docker run --rm --name marathon -p 8080:8080 jveverka/marathon
+ExecStart=/bin/bash -c "/usr/bin/docker run --rm --name marathon -e ZOOKEEPER_ENDPOINTS=`/var/lib/scripts/get_zookeeper_endpoints.sh` -p 8080:8080 jveverka/marathon"
 ExecStop=/usr/bin/docker rm -f marathon
 
 [X-Fleet]
