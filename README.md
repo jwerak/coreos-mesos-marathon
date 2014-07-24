@@ -29,6 +29,35 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
 		"instances": "1"
 	}``
 
+# Architecture
+
+ - Host OS
+  - CoreOS - https://coreos.com/
+   - Native Technology:
+    - ETCD - key/value store 
+    - Fleet - cluster level systemd
+     - Used for triggering cluster apps - zookeeper, mesos-master/slave, marathon
+    - Omaha update protocol - https://github.com/coreos/go-omaha
+  - Mesos - Resource manager gathers resources
+  - Marathon - Mesos framework for running docker images
+  - Deimos - python Docker bindings for mesos-slave
+
+# Features
+
+ - Deploy app simply by specifying:
+  - image name
+  - cpu, ram
+  - No. of instances
+ - Fault tolerance - Environment will ensure that apps are running
+ - Speed
+  - Dev/Test
+   - Create stack faster on demand (Ebay has minimal stack up in 10 minutes)
+  - Prod
+   - Faster Scaling - simply run more instances of app
+ - Better resource utilization
+  - Scale apps up/down on demand
+   - http://blog.docker.com/2014/06/dockercon-video-cluster-management-and-containerization-at-twitter/
+
 # TODO
 
  - [x] Crate docker images for
