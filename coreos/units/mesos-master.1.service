@@ -6,7 +6,8 @@ Requires=docker.service
 Requires=zookeeper.1.service
 
 [Service]
-ExecStart=/bin/bash -c "/usr/bin/docker run --rm -e ZOOKEEPER_ENDPOINTS=`/var/lib/scripts/get_zookeeper_endpoints.sh` --name mesos-master -p 5050:5050 jveverka/mesos-master"
+EnvironmentFile=/etc/environment
+ExecStart=/bin/bash -c "/usr/bin/docker run --rm --net=\"host\" -e ZOOKEEPER_ENDPOINTS=`/var/lib/scripts/get_zookeeper_endpoints.sh` -e COREOS_PUBLIC_IPV4=${COREOS_PUBLIC_IPV4} --name mesos-master -p 5050:5050 jveverka/mesos-master"
 ExecStop=/usr/bin/docker rm -f mesos-master
 
 [X-Fleet]
