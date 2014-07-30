@@ -1,9 +1,11 @@
 ---
 - name: Create Units directory
   file: path=units state=directory mode=0755
+  tags:
+    - configuration
 
 - name: Gather fleet machines info
-  shell: fleetctl --tunnel {{ fleet_endpoint }} list-machines |awk 'BEGIN {ORS=""; print "{\"names\":["} $2 !~ /IP/ {print "\""$2"\","} END{gsub(/,$/,"");print "]}"}' | sed -e 's/,\]/]/'
+  shell: fleetctl --tunnel 127.0.0.1:2222 list-machines -full | grep -v MACHINE| awk ' {ID[NR]=$1; IP[NR]=$2} END {print "{\"ID\":["; for ( i=1; i<=NR; i++) if (i != NR) {print "\""ID[i]"\","} else print "\""ID[i]"\"],"; print "\"IP\":["; for ( i=1; i<=NR; i++) if (i!=NR) {print "\""IP[i]"\","} else print "\""IP[i]"\"]}"}'
   register: fleetctl_hosts
   tags:
     - configuration

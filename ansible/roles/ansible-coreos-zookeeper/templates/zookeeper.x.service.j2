@@ -4,10 +4,13 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-{% set hosts = zookeeper_hosts.stdout|from_json %}
-Environment='ZOO_HOSTS_INFO={% for host in hosts %}{{ host }}:2888:3888 {% endfor %}'
-ExecStart=/usr/bin/docker run --rm --name zookeeper --net="host" -e ZOO_HOSTS_INFO=${ZOO_HOSTS_INFO} -e ZOO_NODE_NUM={{ item }} -p 2181:2181 -p 2888:2888 -p 3888:3888 jveverka/zookeeper
+{% set HOST_IPS = zookeeper_hosts.IPS|from_json %}
+{% set HOST_IDS = zookeeper_hosts.IDS|from_json %}
+Environment='ZOO_HOSTS_INFO={% for host in HOST_IPS %}{{ host }}:2888:3888 {% endfor %}'
+ExecStart=/usr/bin/docker run --rm --name zookeeper --net="host" -e ZOO_HOSTS_INFO=${ZOO_HOSTS_INFO} -e ZOO_NODE_NUM={{ item }} jveverka/zookeeper
 ExecStop=/usr/bin/docker rm -f zookeeper
 
 [X-Fleet]
 X-Conflicts=zookeeper.*.service
+{% set i = item|int %}
+X-ConditionMachineID={{ HOST_IDS[i-1] }}

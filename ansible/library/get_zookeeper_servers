@@ -24,14 +24,15 @@ def main():
     fleet = Fleet(module)
 
     coreos_hosts_json = json.loads(str(fleet.hosts))
-    no_of_coreos_hosts = len(coreos_hosts_json['names'])
+    no_of_coreos_hosts = len(coreos_hosts_json['IP'])
 
     result = {}
 
     if no_of_coreos_hosts > fleet.number:
         result['stderr'] = "Too few coreos hosts"
     else:
-        result['stdout'] = json.dumps(coreos_hosts_json['names'][:no_of_coreos_hosts])
+        result['IPS'] = json.dumps(coreos_hosts_json['IP'][:no_of_coreos_hosts])
+        result['IDS'] = json.dumps(coreos_hosts_json['ID'][:no_of_coreos_hosts])
         result['changed'] = True
 
     module.exit_json(**result)

@@ -13,4 +13,3 @@ ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
 EXPOSE 2181 2888 3888
 WORKDIR /opt/zookeeper-3.4.6
 CMD echo ${ZOO_NODE_NUM} > /var/zookeeper/myid && /opt/zookeeper-3.4.6/bin/setup_zoo_conf.sh /opt/zookeeper-3.4.6/conf/zoo.cfg $ZOO_HOSTS_INFO  && /opt/zookeeper-3.4.6/bin/zkServer.sh start-foreground
-#CMD echo ${ZOO_NODE_NUM} > /var/zookeeper/myid && /opt/zookeeper-3.4.6/bin/setup_zoo_conf.sh /opt/zookeeper-3.4.6/conf/zoo.cfg $ZOO_HOSTS_INFO  && java -cp zookeeper-3.4.6.jar:lib/slf4j-api-1.6.1.jar:lib/slf4j-log4j12-1.6.1.jar:lib/log4j-1.2.15.jar:conf \ org.apache.zookeeper.server.quorum.QuorumPeerMain conf/zoo.cfg
