@@ -1,0 +1,4 @@
+---
+- script: ~/projects/docker/coreos-mesos-marathon/ansible/ansible-coreos/files/deploy_coreos.sh
+
+# Create Dockerfiles

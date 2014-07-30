@@ -1,0 +1,56 @@
+---
+- name: Create Units directory
+  file: path=units state=directory mode=0755
+  tags:
+    - configuration
+
+- name: Gather fleet machines info
+  shell: fleetctl --tunnel 127.0.0.1:2222 list-machines -full | grep -v MACHINE| awk ' {ID[NR]=$1; IP[NR]=$2} END {print "{\"ID\":["; for ( i=1; i<=NR; i++) if (i != NR) {print "\""ID[i]"\","} else print "\""ID[i]"\"],"; print "\"IP\":["; for ( i=1; i<=NR; i++) if (i!=NR) {print "\""IP[i]"\","} else print "\""IP[i]"\"]}"}'
+  register: fleetctl_hosts
+  tags:
+    - configuration
+
+- name: Find zookeeper hosts
+  get_zookeeper_servers: number={{ zookeeper_instances_number }}  hosts='{{ fleetctl_hosts.stdout }}'
+  register: zookeeper_hosts
+  tags:
+    - configuration
+
+- name: Create Zookeeper Units
+  template: src=zookeeper.x.service.j2 dest=units/zookeeper.{{ item }}.service
+  with_sequence: count={{ zookeeper_instances_number }}
+  tags:
+    - configuration
+
+- name: Create Zookeeper Sidekick Units
+  template: src=zookeepersidekick.x.service.j2 dest=units/zookeepersidekick.{{ item }}.service
+  with_sequence: count={{ zookeeper_instances_number }}
+  tags:
+    - configuration
+
+# Submit Units
+
+- name: Submit Zookeeper units
+  shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/zookeeper.{{ item }}.service
+  with_sequence: count={{ zookeeper_instances_number }}
+  tags:
+    - fleet_submit
+
+- name: Submit Zookeeper Sidekick units
+  shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/zookeepersidekick.{{ item }}.service
+  with_sequence: count={{ zookeeper_instances_number }}
+  tags:
+    - fleet_submit
+
+# Start Units
+- name: Start Zookeeper units
+  shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start units/zookeeper.{{ item }}.service
+  with_sequence: count={{ zookeeper_instances_number }}
+  tags:
+    - fleet_start
+
+- name: Start Zookeeper Sidekick units
+  shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start units/zookeepersidekick.{{ item }}.service
+  with_sequence: count={{ zookeeper_instances_number }}
+  tags:
+    - fleet_start

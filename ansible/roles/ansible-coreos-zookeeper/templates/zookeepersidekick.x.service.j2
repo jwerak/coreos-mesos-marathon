@@ -1,0 +1,10 @@
+[Unit]
+Description=Announce Zookeeper {{ item }} service
+BindsTo=zookeeper.{{ item }}.service
+
+[Service]
+ExecStart=/bin/sh -c ". /etc/environment; while true; do etcdctl set /services/zookeeper/zookeeper{{ item }} \"{ \"host\": \"%H\", \"IP\": \"$COREOS_PRIVATE_IPV4\", \"ports\": [ 2181, 2888, 3888] }\" --ttl 60;sleep 45;done"
+ExecStop=/usr/bin/etcdctl rm /services/zookeeper/zookeeper{{ item }}
+
+[X-Fleet]
+X-ConditionMachineOf=zookeeper.{{ item }}.service
