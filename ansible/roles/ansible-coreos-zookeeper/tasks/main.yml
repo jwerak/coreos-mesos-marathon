@@ -35,12 +35,14 @@
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
     - fleet_submit
+    - fleet_submit_zookeeper
 
 - name: Submit Zookeeper Sidekick units
   shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/zookeepersidekick.{{ item }}.service
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
     - fleet_submit
+    - fleet_submit_zookeeper
 
 # Start Units
 - name: Start Zookeeper units
@@ -48,9 +50,11 @@
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
     - fleet_start
+    - fleet_start_zookeeper
 
 - name: Start Zookeeper Sidekick units
   shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start units/zookeepersidekick.{{ item }}.service
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
     - fleet_start
+    - fleet_start_zookeeper
