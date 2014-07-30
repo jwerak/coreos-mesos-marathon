@@ -2,5 +2,18 @@
   gather_facts: no
   sudo: True
   roles:
-    - { role: ansible-coreos }
+  - { role: ansible-coreos }
+#    - { role: ansible-coreos-zookeeper }
+#    - { role: ansible-coreos-mesos }
+#    - { role: ansible-coreos-mesos-master }
+#    - { role: ansible-coreos-marathon }
+#    - { role: ansible-coreos-mesos-slave }
 
+- hosts: localhost
+  gather_facts: no
+  roles:
+  - { role: ansible-coreos-zookeeper, zookeeper_instances_number: "3", fleet_endpoint: "127.0.0.1:2222" }
+#    - { role: ansible-coreos-mesos }
+#    - { role: ansible-coreos-mesos-master }
+#    - { role: ansible-coreos-marathon }
+#    - { role: ansible-coreos-mesos-slave }

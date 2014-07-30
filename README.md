@@ -11,13 +11,16 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
  - Start CoreOS cluster
   - for testing I am using vagrant - http://coreos.com/docs/running-coreos/platforms/vagrant/
  - Logon to Cluster and add unit files
+ - Connect to fleet from localhost - https://github.com/coreos/fleet/blob/master/Documentation/remote-access.md
+  - ``vagrant ssh-config core-01 | sed -n "s/IdentityFile//gp" | xargs ssh-add``
+  - ``export FLEETCTL_TUNNEL="$(vagrant ssh-config core-01 | sed -n "s/[ ]*HostName[ ]*//gp"):$(vagrant ssh-config core-01 | sed -n "s/[ ]*Port[ ]*//gp")"``
  - run units in following order (might work anyway if you change order, I just didn't try it yet):
   - zookeeper
   - mesos-master
   - marathon
   - mesos-slave
  - Test marathon API
-  - curl -v -X POST -H "Content-Type: application/json" <marathon-IP>:8080/v2/apps -d@test.json
+  - ``curl -v -X POST -H "Content-Type: application/json" <marathon-IP>:8080/v2/apps -d@test.json``
   - test.json:
 ``	{
 	"id": "test",
