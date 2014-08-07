@@ -1,0 +1,64 @@
+---
+- name: Create Units directory
+  file: path=units state=directory mode=0755
+  tags:
+    - configuration
+
+# Prerequisities
+# ssh access to machine
+# fleetctl available on $PATH
+# key used in tunnel in ssh-agent
+- name: Gather fleet machines info
+  get_coreos_machines: tunnel={{ fleet_endpoint }}
+  register: fleetctl_hosts
+  tags:
+    - configuration
+    - coreos_registry
+
+- name: Find registry host
+  get_registry_machine: IPS="{{ item['IPS'] }}" IDS="{{ item['IDS'] }}"
+  register: registry_host
+  with_items:
+    - "{{ fleetctl_hosts['stdout'] }}"
+  tags:
+    - configuration
+    - coreos_registry
+  notify:
+    - Write registry IP to coreos servers
+
+- name: Create Registry Units
+  template: src={{ item.template }} dest=units/{{ item.file }}
+  with_items:
+    - template: "docker-registry-install.x.service.j2"
+      file: "docker-registry-install.1.service"
+    - template: "registry.x.service.j2"
+      file: "registry.1.service"
+  tags:
+    - configuration
+
+# Submit Units
+- name: Submit Install Registry units
+  shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/docker-registry-install.1.service
+  tags:
+    - fleet_submit
+    - fleet_submit_registry
+
+- name: Submit Registry units
+  shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/{{ item }}
+  with_items:
+    - "docker-registry-install.1.service"
+    - "registry.1.service"
+  tags:
+    - fleet_submit
+    - fleet_submit_registry
+
+# Start Units
+- name: Start Registry units
+  shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start {{ item }}
+  with_items:
+    - "docker-registry-install.1.service"
+    - "registry.1.service"
+  tags:
+    - fleet_start
+    - fleet_start_registry
+

@@ -1,0 +1,41 @@
+#!/usr/bin/python
+import json
+
+class Fleet(object):
+    """
+    This is a fleet class that can gather info about coreos fleet cluster
+    """
+
+    def __init__(self, module):
+        self.module     = module
+        self.list       = module.params['list']
+        self.hosts      = module.params['hosts']
+        self.number     = module.params['number']
+
+def main():
+    module = AnsibleModule(
+        argument_spec       = dict(
+            list            = dict(default='machines', choices=['machines', 'units'], type='str'),
+            hosts           = dict(required=True, type='str'),
+            number          = dict(required=True, type='str'),
+        )
+    )
+
+    fleet = Fleet(module)
+
+    coreos_hosts_json = json.loads(str(fleet.hosts))
+    no_of_coreos_hosts = len(coreos_hosts_json['IPS'])
+
+    result = {}
+
+    if no_of_coreos_hosts > fleet.number:
+        result['stderr'] = "Too few coreos hosts"
+    else:
+        result['IPS'] = json.dumps(coreos_hosts_json['IPS'][:no_of_coreos_hosts])
+        result['IDS'] = json.dumps(coreos_hosts_json['IDS'][:no_of_coreos_hosts])
+        result['changed'] = True
+
+    module.exit_json(**result)
+
+from ansible.module_utils.basic import *
+main()

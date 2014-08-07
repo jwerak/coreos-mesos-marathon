@@ -1,0 +1,4 @@
+contrib
+.tox
+reports
+tests

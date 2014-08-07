@@ -1,0 +1,2 @@
+---
+- script: deploy_coreos.sh

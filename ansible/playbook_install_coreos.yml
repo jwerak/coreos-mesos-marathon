@@ -2,5 +2,10 @@
   gather_facts: no
   sudo: True
   roles:
-    - { role: ansible-coreos }
+  - { role: ansible-coreos }
 
+- hosts: local
+  gather_facts: no
+  roles:
+  - { role: ansible-coreos-registry, registry_hostname: "dockerregistry" }
+  - { role: ansible-coreos-zookeeper, zookeeper_instances_number: "3" }

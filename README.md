@@ -6,18 +6,28 @@ I was ispired by Ebay's building from docker using hosts docker setup (http://ww
 
 I want to enjoy both CoreOS and mesos resource management, in future hopefully kubernetes (https://github.com/mesosphere/kubernetes-mesos).
 
+# Prerequisites
+
+- fleetctl
+- vagrant
+- virtualbox
+- python
+
 # Install
 
  - Start CoreOS cluster
   - for testing I am using vagrant - http://coreos.com/docs/running-coreos/platforms/vagrant/
  - Logon to Cluster and add unit files
+ - Connect to fleet from localhost - https://github.com/coreos/fleet/blob/master/Documentation/remote-access.md
+  - ``vagrant ssh-config core-01 | sed -n "s/IdentityFile//gp" | xargs ssh-add``
+  - ``export FLEETCTL_TUNNEL="$(vagrant ssh-config core-01 | sed -n "s/[ ]*HostName[ ]*//gp"):$(vagrant ssh-config core-01 | sed -n "s/[ ]*Port[ ]*//gp")"``
  - run units in following order (might work anyway if you change order, I just didn't try it yet):
   - zookeeper
   - mesos-master
   - marathon
   - mesos-slave
  - Test marathon API
-  - curl -v -X POST -H "Content-Type: application/json" <marathon-IP>:8080/v2/apps -d@test.json
+  - ``curl -v -X POST -H "Content-Type: application/json" <marathon-IP>:8080/v2/apps -d@test.json``
   - test.json:
 ``	{
 	"id": "test",
@@ -61,6 +71,7 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
 # TODO
 
  - [x] Crate docker images for
+  - Docker Registry
   - Zookeeper
   - Mesos-master
   - Mesos-slave
@@ -69,6 +80,7 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
   - [ ] Create pattern Unit files
    - [ ] Idealy using some tool (ansible...)
   - [ ] Set dynamic communication between services
-   - probably using etcd
+   - using etcd
+   - using haproxy generated from marathon (https://github.com/mesosphere/marathon)
 
 

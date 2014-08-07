@@ -1,0 +1,5 @@
+---
+coreos_ssh_user: 'core'
+coreos_ssh_key: '/home/jveverka/.vagrant.d/insecure_private_key'
+coreos_cmd_set_registry: if [ `grep "dockerregistry" hosts &>/dev/null; echo $?` -eq 0 ]; then sed -i 's/.*dockerregistry.*/IP dockerregisy/g' hosts; else echo "IP dockerregistry">> hosts ;fi
+fleet_endpoint: "127.0.0.1:2222"
