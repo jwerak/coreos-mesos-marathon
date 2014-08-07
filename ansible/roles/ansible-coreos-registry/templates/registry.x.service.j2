@@ -1,0 +1,12 @@
+[Unit]
+After=docker-registry-install.1.service
+Description=Run docker registry
+Documentation=https://github.com/docker/docker-registry
+Requires=docker-registry-install.1.service
+
+[Service]
+ExecStart=/usr/bin/docker run --rm --name docker-registry -v /home/core/docker-registry:/registry-conf -v /registry:/registry -e DOCKER_REGISTRY_CONFIG=/registry-conf/config.yml -e STORAGE_PATH=/registry -e SETTINGS_FLAVOR=local -e SEARCH_BACKEND=sqlalchemy -p 5000:5000 jveverka/registry
+ExecStop=/usr/bin/docker rm -f docker-registry
+
+[X-Fleet]
+X-ConditionMachineOf=docker-registry-install.1.service

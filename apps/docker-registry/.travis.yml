@@ -1,0 +1,24 @@
+language: python
+
+python:
+  - "2.6"
+  - "2.7"
+
+install:
+## This below should be separated when core lives elsewhere
+# Install core tests reqs
+  - pip install -rdepends/docker-registry-core/requirements/test.txt
+  - pip install -rdepends/docker-registry-core/requirements/style.txt
+# Install core itself
+  - pip install depends/docker-registry-core/
+
+# Install our tests requirements, and ourselves
+  - pip install -rrequirements/test.txt
+  - pip install .
+
+# XXX should run the core tests as well
+script: SETTINGS_FLAVOR=test DOCKER_REGISTRY_CONFIG=config_sample.yml flake8 . && SETTINGS_FLAVOR=test DOCKER_REGISTRY_CONFIG=config_sample.yml python setup.py nosetests
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install libevent-dev liblzma-dev

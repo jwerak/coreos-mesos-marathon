@@ -5,7 +5,7 @@
     - configuration
 
 - name: Gather fleet machines info
-  get_coreos_machines: tunnel="127.0.0.1:2222"
+  get_coreos_machines: tunnel={{ fleet_endpoint }}
   register: fleetctl_hosts
   tags:
     - configuration
