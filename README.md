@@ -6,6 +6,13 @@ I was ispired by Ebay's building from docker using hosts docker setup (http://ww
 
 I want to enjoy both CoreOS and mesos resource management, in future hopefully kubernetes (https://github.com/mesosphere/kubernetes-mesos).
 
+# Prerequisites
+
+- fleetctl
+- vagrant
+- virtualbox
+- python
+
 # Install
 
  - Start CoreOS cluster
@@ -64,6 +71,7 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
 # TODO
 
  - [x] Crate docker images for
+  - Docker Registry
   - Zookeeper
   - Mesos-master
   - Mesos-slave
@@ -72,6 +80,7 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
   - [ ] Create pattern Unit files
    - [ ] Idealy using some tool (ansible...)
   - [ ] Set dynamic communication between services
-   - probably using etcd
+   - using etcd
+   - using haproxy generated from marathon (https://github.com/mesosphere/marathon)
 
 
