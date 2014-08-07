@@ -5,7 +5,7 @@
     - configuration
 
 - name: Gather fleet machines info
-  shell: fleetctl --tunnel 127.0.0.1:2222 list-machines -full | grep -v MACHINE| awk ' {ID[NR]=$1; IP[NR]=$2} END {print "{\"ID\":["; for ( i=1; i<=NR; i++) if (i != NR) {print "\""ID[i]"\","} else print "\""ID[i]"\"],"; print "\"IP\":["; for ( i=1; i<=NR; i++) if (i!=NR) {print "\""IP[i]"\","} else print "\""IP[i]"\"]}"}'
+  get_coreos_machines: tunnel="127.0.0.1:2222"
   register: fleetctl_hosts
   tags:
     - configuration
@@ -35,12 +35,14 @@
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
     - fleet_submit
+    - fleet_submit_zookeeper
 
 - name: Submit Zookeeper Sidekick units
   shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/zookeepersidekick.{{ item }}.service
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
     - fleet_submit
+    - fleet_submit_zookeeper
 
 # Start Units
 - name: Start Zookeeper units
@@ -48,9 +50,11 @@
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
     - fleet_start
+    - fleet_start_zookeeper
 
 - name: Start Zookeeper Sidekick units
   shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start units/zookeepersidekick.{{ item }}.service
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
     - fleet_start
+    - fleet_start_zookeeper

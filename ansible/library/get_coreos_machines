@@ -1,0 +1,27 @@
+#!/bin/bash
+set -x
+TUNNEL=""
+
+# Parse arguments
+KEY=`cat $1 | sed -r 's/(.*)=.*/\1/'`
+VAL=`cat $1 | sed -r 's/.*=(.*)/\1/'`
+case $KEY in
+	tunnel)
+		TUNNEL="--tunnel 127.0.0.1:2222"
+		;;
+	\?)
+		echo "Invalid Option $1"
+		;;
+esac
+
+IPS=$(fleetctl $TUNNEL list-machines -full | grep -v MACHINE| awk '{IP[NR]=$2} END {printf("["); for ( i=1; i<=NR; i++) if (i != NR) {printf("\\\"%s\\\",",IP[i])} else printf("\\\"%s\\\"]",IP[i])}')
+IDS=$(fleetctl $TUNNEL list-machines -full | grep -v MACHINE| awk '{ID[NR]=$2} END {printf("["); for ( i=1; i<=NR; i++) if (i != NR) {printf("\\\"%s\\\",",ID[i])} else printf("\\\"%s\\\"]",ID[i])}'|tr "\n" " ")
+#IPS=`fleetctl $TUNNEL list-machines -full | grep -v MACHINE| awk '{IP[NR]=$2} END {print "["; for ( i=1; i<=NR; i++) if (i != NR) {print "\""IP[i]"\","} else print "\""IP[i]"\"]"}'|tr "\n" " "`
+#IDS=`fleetctl $TUNNEL list-machines -full | grep -v MACHINE| awk '{ID[NR]=$1} END {print "["; for ( i=1; i<=NR; i++) if (i != NR) {print "\""ID[i]"\","} else print "\""ID[i]"\"]"}'|tr "\n" " "`
+
+echo 'changed=True stdout="{\"IPS\": '${IPS}', \"IDS\": '${IDS}'}"'
+exit 0
+
+
+#fleetctl --tunnel 127.0.0.1:2222 list-machines -full | grep -v MACHINE| awk ' {ID[NR]=$1; IP[NR]=$2} END {print "{\"ID\":["; for ( i=1; i<=NR; i++) if (i != NR) {print "\""ID[i]"\","} else print "\""ID[i]"\"],"; print "\"IP\":["; for ( i=1; i<=NR; i++) if (i!=NR) {print "\""IP[i]"\","} else print "\""IP[i]"\"]}"}'
+

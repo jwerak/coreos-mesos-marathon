@@ -2,11 +2,11 @@
 #===============================================================================
 #
 #          FILE:  deploy_coreos.sh
-# 
-#         USAGE:  ./deploy_coreos.sh 
-# 
-#   DESCRIPTION:  
-# 
+#·
+#         USAGE:  ./deploy_coreos.sh·
+#·
+#   DESCRIPTION:··
+#·
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
 #          BUGS:  ---
@@ -23,7 +23,7 @@ ZOOKEEPER_PORT="2181"
 # Create script that will return zookeeper IP:PORT, possibly multiple - not implemented yet
 mkdir -p -m 755 $SCRIPT_DIR
 echo "#!/bin/bash" > $SCRIPT_FULL_NAME
-echo "echo \`etcdctl get /services/zookeeper/zookeeper1 | sed -e 's/[\{\}]//g' | awk 'BEGIN{RS=\",\"; FS=\":\";} \$1 ~ /IP/ { print \$2 }' | sed -e 's/ //g'\`:$ZOOKEEPER_PORT" >> $SCRIPT_FULL_NAME
+echo "echo \`etcdctl ls /services/zookeeper/ | while read KEY; do etcdctl get \$KEY| sed -r 's/.*IP:\ ([0-9,.]*),.*/\1/'; done | tr \"\n\" \" \" | sed 's/\ /:$ZOOKEEPER_PORT,/g'| sed 's/,\$//' \`" >> $SCRIPT_FULL_NAME
 
 chmod 755 $SCRIPT_FULL_NAME
 
