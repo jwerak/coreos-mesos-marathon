@@ -1,6 +1,6 @@
 ---
 - name: Write registry IP to coreos servers
-  shell: ssh {{ coreos_ssh_user }}@{{ hostvars[item]['ansible_ssh_host'] }} -p {{ hostvars[item]['ansible_ssh_port'] }} -i {{ coreos_ssh_key }} "if [ \$(grep {{ registry_hostname }} hosts | wc -l) -gt 0 ]; then sed -i 's/.*{{ registry_hostname }}.*/{{ registry_host.results[0].IP }} {{ registry_hostname }}/g' hosts; else echo \"{{ registry_host.results[0].IP }} {{ registry_hostname }}\">> hosts ;fi"
+  shell: ssh {{ coreos_ssh_user }}@{{ hostvars[item]['ansible_ssh_host'] }} -p {{ hostvars[item]['ansible_ssh_port'] }} -i {{ coreos_ssh_key }} "if [ \$(grep {{ registry_hostname }} /etc/hosts | wc -l) -gt 0 ]; then sudo sed -i 's/.*{{ registry_hostname }}.*/{{ registry_host.results[0].IP }} {{ registry_hostname }}/g' /etc/hosts; else echo \"{{ registry_host.results[0].IP }} {{ registry_hostname }}\" | sudo tee --append /etc/hosts 1>/dev/null ;fi"
   with_items:
     - "{{ groups['coreos'] }}"
 
