@@ -12,6 +12,7 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
 - vagrant
 - virtualbox
 - python
+ - docker-py==0.3.1
 
 # Install
 

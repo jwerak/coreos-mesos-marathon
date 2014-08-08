@@ -1,0 +1,41 @@
+#!/usr/bin/python
+import json
+import shlex
+
+class Fleet(object):
+    """
+    This is a fleet class that can gather info about coreos fleet machine of given unit
+    """
+
+    def __init__(self, module):
+        self.module = module
+        self.tunnel     = module.params['tunnel']
+        self.unit_name  = module.params['unit_name']
+
+def main():
+    module = AnsibleModule(
+        argument_spec       = dict(
+            tunnel          = dict(default=None, type='str'),
+            unit_name       = dict(required=True, type='str'),
+        )
+    )
+
+    registry = Fleet(module)
+    tunnel = "--tunnel " + registry.tunnel if registry.tunnel is not None else ""
+    query_command = shlex.split("fleetctl "+tunnel+" list-units -full")
+    grep_command = shlex.split("grep " + registry.unit_name)
+
+    machines_info = subprocess.Popen(query_command, stdout=subprocess.PIPE)
+    unit_info = subprocess.check_output(grep_command, stdin=machines_info.stdout)
+    machines_info.wait()
+    out = unit_info.split("\t")[-1].split("/")[1]
+
+    result = {}
+
+    result['machineIP'] = out
+    result['changed'] = True
+
+    module.exit_json(**result)
+
+from ansible.module_utils.basic import *
+main()

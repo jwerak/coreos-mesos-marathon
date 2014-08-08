@@ -16,7 +16,7 @@
     - coreos_registry
 
 - name: Find registry host
-  get_registry_machine: IPS="{{ item['IPS'] }}" IDS="{{ item['IDS'] }}"
+  choose_registry_machine: IPS="{{ item['IPS'] }}" IDS="{{ item['IDS'] }}"
   register: registry_host
   with_items:
     - "{{ fleetctl_hosts['stdout'] }}"
@@ -25,6 +25,7 @@
     - coreos_registry
   notify:
     - Write registry IP to coreos servers
+    - Write registry IP locally
 
 - name: Create Registry Units
   template: src={{ item.template }} dest=units/{{ item.file }}

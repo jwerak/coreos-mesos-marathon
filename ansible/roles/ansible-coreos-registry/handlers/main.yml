@@ -4,3 +4,5 @@
   with_items:
     - "{{ groups['coreos'] }}"
 
+- name: Write registry IP locally
+  shell: if [ $(grep {{ registry_hostname }} /etc/hosts | wc -l) -gt 0 ]; then sudo sed -i 's/.*{{ registry_hostname }}.*/{{ registry_host.results[0].IP }} {{ registry_hostname }}/g' /etc/hosts; else echo "{{ registry_host.results[0].IP }} {{ registry_hostname }}" | sudo tee --append /etc/hosts 1>/dev/null ;fi
