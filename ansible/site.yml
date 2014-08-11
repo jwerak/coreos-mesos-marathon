@@ -4,3 +4,4 @@
 - include: coreos-registry.yml
 - include: coreos-zookeeper.yml
 - include: coreos-mesos-all.yml
+- include: coreos-marathon.yml
