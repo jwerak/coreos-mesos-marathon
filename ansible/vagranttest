@@ -1,0 +1,11 @@
+[local]
+localhost   ansible_connection=local fleet_endpoint="127.0.0.1:2222"
+
+[coreos]
+coreos-01 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 ansible_ssh_user=core
+coreos-02 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2200 ansible_ssh_user=core
+coreos-03 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2201 ansible_ssh_user=core
+
+[all:children]
+local
+coreos

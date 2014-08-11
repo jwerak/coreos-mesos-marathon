@@ -1,0 +1,33 @@
+#!/usr/bin/python
+import json
+
+class Registry(object):
+    """
+    This is a fleet class that can gather info about coreos fleet cluster
+    """
+
+    def __init__(self, module):
+        self.module = module
+        self.IPS     = module.params['IPS']
+        self.IDS     = module.params['IDS']
+
+def main():
+    module = AnsibleModule(
+        argument_spec       = dict(
+            IPS              = dict(required=True, type='str'),
+            IDS              = dict(required=True, type='str'),
+        )
+    )
+
+    registry = Registry(module)
+
+    result = {}
+
+    result['IP'] = json.loads(str(registry.IPS).replace("'","\""))[0]
+    result['ID'] = json.loads(str(registry.IDS).replace("'","\""))[0]
+    result['changed'] = True
+
+    module.exit_json(**result)
+
+from ansible.module_utils.basic import *
+main()

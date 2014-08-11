@@ -1,4 +1,43 @@
 ---
-- script: ~/projects/docker/coreos-mesos-marathon/ansible/ansible-coreos/files/deploy_coreos.sh
+# Build and push image
+- name: Create marathon Dockerfile
+  template: src=marathon-dockerfile.j2 dest=roles/ansible-coreos-marathon/docker/docker-marathon/Dockerfile
+  tags:
+    - configuration
 
-# Create Dockerfiles
+- name: Build marathon image
+  docker_image: path="roles/ansible-coreos-marathon/docker/docker-marathon" name="{{ marathon_image_name }}" state="build"
+  tags:
+    - docker
+    - docker_build
+
+- name: Push marathon image to repo
+  shell: "docker push {{ marathon_image_name }}"
+  tags:
+    - docker
+    - docker_push
+
+# Create required fleet unit files
+- name: Create Units directory
+  file: path=units state=directory mode=0755
+  tags:
+    - configuration
+
+- name: Create marathon Units
+  template: src=marathon.x.service.j2 dest=units/marathon.1.service
+  tags:
+    - configuration
+
+# Submit units to fleet
+- name: Submit marathon units
+  shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/marathon.1.service
+  tags:
+    - fleet
+    - fleet_submit
+
+# Start units via fleet
+- name: Start marathon units
+  shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start units/marathon.1.service
+  tags:
+    - fleet
+    - fleet_start

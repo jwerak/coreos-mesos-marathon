@@ -1,0 +1,8 @@
+---
+registry_hostname: 'dockerregistry'
+registry_port: '5000'
+zookeeper_image_name: '{{ registry_hostname }}:{{ registry_port }}/zookeeper'
+mesos_image_name: '{{ registry_hostname }}:{{ registry_port }}/mesos'
+mesosslave_image_name: '{{ registry_hostname }}:{{ registry_port }}/mesos-slave'
+mesosmaster_image_name: '{{ registry_hostname }}:{{ registry_port }}/mesos-master'
+marathon_image_name: '{{ registry_hostname }}:{{ registry_port }}/marathon'

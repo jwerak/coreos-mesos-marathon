@@ -1,4 +1,16 @@
 ---
+- name: Build zookeeper image
+  docker_image: path="roles/ansible-coreos-zookeeper/docker/docker-zookeeper" name="{{ zookeeper_image_name }}" state="build"
+  tags:
+    - docker
+    - docker_build
+
+- name: Push zookeeper image to repo
+  shell: "docker push {{ zookeeper_image_name }}"
+  tags:
+    - docker
+    - docker_push
+
 - name: Create Units directory
   file: path=units state=directory mode=0755
   tags:
@@ -34,27 +46,27 @@
   shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/zookeeper.{{ item }}.service
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
+    - fleet
     - fleet_submit
-    - fleet_submit_zookeeper
 
 - name: Submit Zookeeper Sidekick units
   shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/zookeepersidekick.{{ item }}.service
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
+    - fleet
     - fleet_submit
-    - fleet_submit_zookeeper
 
 # Start Units
 - name: Start Zookeeper units
   shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start units/zookeeper.{{ item }}.service
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
+    - fleet
     - fleet_start
-    - fleet_start_zookeeper
 
 - name: Start Zookeeper Sidekick units
   shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start units/zookeepersidekick.{{ item }}.service
   with_sequence: count={{ zookeeper_instances_number }}
   tags:
+    - fleet
     - fleet_start
-    - fleet_start_zookeeper

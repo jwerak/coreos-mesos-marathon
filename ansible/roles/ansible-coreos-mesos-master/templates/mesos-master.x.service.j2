@@ -1,0 +1,10 @@
+[Unit]
+Description=Mesos Master service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/bin/bash -c "/usr/bin/docker run --rm --net=\"host\" -e ZOOKEEPER_ENDPOINTS=`/var/lib/scripts/get_zookeeper_endpoints.sh` -e COREOS_PUBLIC_IPV4=${COREOS_PUBLIC_IPV4} --name mesos-master -p 5050:5050 {{ mesosmaster_image_name }}"
+ExecStop=/usr/bin/docker rm -f mesos-master
+
+[X-Fleet]
+X-Conflicts=mesos-master.*.service
