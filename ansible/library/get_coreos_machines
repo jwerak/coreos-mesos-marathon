@@ -16,9 +16,11 @@ esac
 fleetctl $TUNNEL list-machines &>/dev/null &>/dev/null
 if [ $? -eq 0 ]
 then
-	IPS=$(fleetctl $TUNNEL list-machines -full | grep -v MACHINE| awk '{IP[NR]=$2} END {printf("["); for ( i=1; i<=NR; i++) if (i != NR) {printf("\\\"%s\\\",",IP[i])} else printf("\\\"%s\\\"]",IP[i])}')
-	IDS=$(fleetctl $TUNNEL list-machines -full | grep -v MACHINE| awk '{ID[NR]=$1} END {printf("["); for ( i=1; i<=NR; i++) if (i != NR) {printf("\\\"%s\\\",",ID[i])} else printf("\\\"%s\\\"]",ID[i])}')
-	echo 'changed=True stdout="{\"IPS\": '${IPS}', \"IDS\": '${IDS}'}"'
+	FLEET_INFO=$(fleetctl $TUNNEL list-machines -full | grep -v MACHINE)
+	IPS=$(echo "$FLEET_INFO" | awk '{IP[NR]=$2} END {printf("["); for ( i=1; i<=NR; i++) if (i != NR) {printf("\\\"%s\\\",",IP[i])} else printf("\\\"%s\\\"]",IP[i])}')
+	IDS=$(echo "$FLEET_INFO" | awk '{ID[NR]=$1} END {printf("["); for ( i=1; i<=NR; i++) if (i != NR) {printf("\\\"%s\\\",",ID[i])} else printf("\\\"%s\\\"]",ID[i])}')
+	COUNT=$(echo "$FLEET_INFO" | wc -l)
+	echo 'changed=True count='${COUNT}' stdout="{\"IPS\": '${IPS}', \"IDS\": '${IDS}'}"'
 	exit 0
 else
 	echo 'failed=True stderr="Couldnt connect to fleet daemon, try checking your connection manualy"'

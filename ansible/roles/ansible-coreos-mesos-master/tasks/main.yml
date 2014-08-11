@@ -1,0 +1,43 @@
+---
+# Build and push image
+- name: Create mesos-master Dockerfile
+  template: src=mesos-master-dockerfile.j2 dest=roles/ansible-coreos-mesos-master/docker/docker-mesos-master/Dockerfile
+  tags:
+    - configuration
+
+- name: Build mesos-master image
+  docker_image: path="roles/ansible-coreos-mesos-master/docker/docker-mesos-master" name="{{ mesosmaster_image_name }}" state="build"
+  tags:
+    - docker
+    - docker_build
+
+- name: Push mesos-master image to repo
+  shell: "docker push {{ mesosmaster_image_name }}"
+  tags:
+    - docker
+    - docker_push
+
+# Create required fleet unit files
+- name: Create Units directory
+  file: path=units state=directory mode=0755
+  tags:
+    - configuration
+
+- name: Create mesos-master Units
+  template: src=mesos-master.x.service.j2 dest=units/mesos-master.1.service
+  tags:
+    - configuration
+
+# Submit units to fleet
+- name: Submit mesos-master units
+  shell: fleetctl --tunnel {{ fleet_endpoint }} submit units/mesos-master.1.service
+  tags:
+    - fleet
+    - fleet_submit
+
+# Start units via fleet
+- name: Start mesos-master units
+  shell: sleep 5 && fleetctl --tunnel {{ fleet_endpoint }} start units/mesos-master.1.service
+  tags:
+    - fleet
+    - fleet_start
