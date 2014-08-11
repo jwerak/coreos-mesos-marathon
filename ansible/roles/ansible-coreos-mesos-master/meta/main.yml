@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Jakub Veverka
-  description: Ansible CoreOS Mesos-Master Playbook Role
+  description: Ansible CoreOS Mesos Playbook Role
   license: Apache 2
   min_ansible_version: 1.2
   #

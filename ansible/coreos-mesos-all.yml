@@ -1,0 +1,4 @@
+---
+- include: coreos-mesos.yml
+- include: coreos-mesos-master.yml
+- include: coreos-mesos-slave.yml

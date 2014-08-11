@@ -1,3 +1,13 @@
 ---
-- script: ~/projects/docker/coreos-mesos-marathon/ansible/ansible-coreos/files/deploy_coreos.sh
+# Build and prepare mesos image
+- name: Build mesos image
+  docker_image: path="roles/ansible-coreos-mesos/docker/docker-mesos" name="{{ mesos_image_name }}" state="build"
+  tags:
+    - docker
+    - docker_build
 
+- name: Push mesos image to repo
+  shell: "docker push {{ mesos_image_name }}"
+  tags:
+    - docker
+    - docker_push
