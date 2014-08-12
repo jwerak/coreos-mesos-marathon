@@ -1,9 +1,9 @@
 {
+    "container": {"image": "docker://dockerregistry:5000/vevatest", "options" : []},
     "id": "test",
-    "container": {"image": "docker:///debian:jessie", "options" : []},
-    "cmd": "while true; do date -u +%T; sleep 5; done",
-    "cpus": "0.5",
-    "mem": "268.0",
-		"uris": [ ],
-    "instances": "1"
+    "instances": "3",
+    "cpus": "0.1",
+    "mem": "25.0",
+    "uris": [ ],
+    "cmd": ""
 }

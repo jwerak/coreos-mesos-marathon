@@ -30,7 +30,7 @@ chmod 755 $SCRIPT_FULL_NAME
 echo "net.ipv6.conf.all.disable_ipv6=1" > /etc/sysctl.d/disable_ipv6.conf
 sysctl -w net.ipv6.conf.all.disable_ipv6=1
 
-# Create /etc/hosts file 
+# Create /etc/hosts file
 touch /etc/hosts
 chmod 644 /etc/hosts
 chown root:root /etc/hosts
