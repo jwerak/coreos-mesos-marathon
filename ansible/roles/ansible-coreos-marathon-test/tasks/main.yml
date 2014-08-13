@@ -1,0 +1,27 @@
+---
+# Build and push image
+- name: Build marathon-test image
+  docker_image: path="roles/ansible-coreos-marathon-test/docker/docker-marathon-test" name="{{ marathon_test_image_name }}" state="build"
+  tags:
+    - docker
+    - docker_build
+
+- name: Push marathon image to repo
+  shell: "docker push {{ marathon_test_image_name }}"
+  tags:
+    - docker
+    - docker_push
+
+# Submit apps to marathon
+- name: Find marathon server
+  get_units_machine: tunnel={{ fleet_endpoint }} unit_name="marathon.1.service"
+  register: marathon_machine
+  tags:
+    - test
+
+- name: Submit marathon test apps
+  shell: "curl -v -X POST -H \"Content-Type: application/json\" {{ marathon_machine.machineIP }}:8080/v2/apps -d@debian.json"
+  #debug: msg="{{ marathon_machine.machineIP }}"
+  tags:
+    - test
+

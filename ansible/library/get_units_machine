@@ -28,7 +28,7 @@ def main():
     machines_info = subprocess.Popen(query_command, stdout=subprocess.PIPE)
     unit_info = subprocess.check_output(grep_command, stdin=machines_info.stdout)
     machines_info.wait()
-    out = unit_info.split("\t")[-1].split("/")[1]
+    out = unit_info.split("\t")[-1].split("/")[1].replace('\n', '')
 
     result = {}
 
