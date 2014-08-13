@@ -1,5 +1,5 @@
 {
-    "container": {"image": "docker://dockerregistry:5000/vevatest", "options" : []},
+    "container": {"image": "docker:///dockerregistry:5000/marathon-test", "options" : []},
     "id": "test",
     "instances": "3",
     "cpus": "0.1",
