@@ -13,20 +13,30 @@ I want to enjoy both CoreOS and mesos resource management, in future hopefully k
 - virtualbox
 - python
  - docker-py==0.3.1
+ - ansible
 
 # Install
 
  - Start CoreOS cluster
   - for testing I am using vagrant - http://coreos.com/docs/running-coreos/platforms/vagrant/
- - Logon to Cluster and add unit files
+  - slightly customized version is in coreos-vagrant directory
  - Connect to fleet from localhost - https://github.com/coreos/fleet/blob/master/Documentation/remote-access.md
-  - ``vagrant ssh-config core-01 | sed -n "s/IdentityFile//gp" | xargs ssh-add``
+  - fleet is getting ssh-keys from ssh-agent so if you don't have yours there already you can add one using
+  - ``ssh-agent && vagrant ssh-config core-01 | sed -n "s/IdentityFile//gp" | xargs ssh-add``
   - ``export FLEETCTL_TUNNEL="$(vagrant ssh-config core-01 | sed -n "s/[ ]*HostName[ ]*//gp"):$(vagrant ssh-config core-01 | sed -n "s/[ ]*Port[ ]*//gp")"``
- - run units in following order (might work anyway if you change order, I just didn't try it yet):
+ - make initial changes on coreos hosts, following commnads have to be run from ansible directory
+  - ansible-playbook -i vagranttest coreos.yml
+ - submit and start following units:
+  - registry
+   - ansible-playbook -i vagranttest coreos-registry.yml
   - zookeeper
+   - ansible-playbook -i vagranttest coreos-zookeeper.yml
   - mesos-master
-  - marathon
+   - ansible-playbook -i vagranttest coreos-mesos-master.yml
   - mesos-slave
+   - ansible-playbook -i vagranttest coreos-mesos-slave.yml
+  - marathon
+   - ansible-playbook -i vagranttest coreos-marathon.yml
  - Test marathon API
   - ``curl -v -X POST -H "Content-Type: application/json" <marathon-IP>:8080/v2/apps -d@test.json``
   - test.json:
