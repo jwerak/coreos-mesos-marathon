@@ -1,4 +1,4 @@
 - hosts: local
   gather_facts: no
   roles:
-  - { role: ansible-coreos-marathon }
+  - { role: coreos-marathon }

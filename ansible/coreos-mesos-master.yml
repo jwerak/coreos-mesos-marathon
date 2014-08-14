@@ -1,4 +1,4 @@
 - hosts: local
   gather_facts: no
   roles:
-  - { role: ansible-coreos-mesos-master }
+  - { role: coreos-mesos-master }

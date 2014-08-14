@@ -2,4 +2,4 @@
   gather_facts: no
   sudo: True
   roles:
-  - { role: ansible-coreos }
+  - { role: coreos }
